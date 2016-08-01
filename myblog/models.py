@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from myblog.database import Base
 import datetime
 
@@ -8,14 +9,14 @@ class Post(Base):
     title = Column(String(100), nullable=False)
     body = Column(Text, nullable=True)
     timestamp = Column(DateTime)
-    hidden = Column(Boolean, nullabe=False)
+    hidden = Column(Boolean, nullable=False)
     
 
     def __init__(self, title=None, body=None, timestamp=datetime.datetime.now(), hidden = False):
         self.title = title
         self.body = body
         self.timestamp = timestamp
-        self.hidden = False
+        self.hidden = hidden
 
     def __repr__(self):
         return '<Post %r, %r>' % (self.id,self.title)

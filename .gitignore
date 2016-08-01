@@ -1,7 +1,7 @@
 venv/
 fs
 fls
-florm.db
+*.db
 florm/__pycache__/
 __pycache__/
 *.swp
