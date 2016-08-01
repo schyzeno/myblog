@@ -13,6 +13,17 @@ class MyblogTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert b'<title>Home</title>' in rv.data
 
+    def login(self, username, password):
+        return self.app.post('/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+
+
+    def test_login_logout(self):
+#        rv = self.login(myblog.app.config['USERNAME'], myblog.app.config['PASSWORD'])
+        rv = self.login('admin','default')
+        assert b'You were logged in' in rv.data
 
 if __name__ == '__main__':
     unittest.main()
