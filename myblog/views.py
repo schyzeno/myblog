@@ -31,3 +31,23 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('index'))
+
+@app.route('/add_post', methods=['GET','POST'])
+def add_post():
+    if request.method=='POST':
+        print(request.form['categories'].split())
+        tags = [] 
+        for tag in request.form['categories'].split():
+            tags.append(Category(name=tag))
+        post = Post(title=request.form['title'],
+                    categories=tags,
+                    body=request.form['body'])
+        db_session.add(post)
+        db_session.commit()
+        return redirect(url_for('view_post',postid=post.id))
+    return render_template('form_post.html')
+
+@app.route('/post/<postid>')
+def view_post(postid):
+    post = db_session.query(Post).filter_by(id=postid).first()
+    return render_template('view_post.html',post=post)
