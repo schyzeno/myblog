@@ -18,12 +18,21 @@ class MyblogTestCase(unittest.TestCase):
             username=username,
             password=password
         ), follow_redirects=True)
+    
+    def logout(self):
+        return self.app.get('/logout', follow_redirects=True)
 
 
     def test_login_logout(self):
-#        rv = self.login(myblog.app.config['USERNAME'], myblog.app.config['PASSWORD'])
-        rv = self.login('admin','default')
+        rv = self.login(myblog.app.config['USERNAME'], myblog.app.config['PASSWORD'])
         assert b'You were logged in' in rv.data
+        rv = self.logout()
+        assert b'You were logged out' in rv.data
+        rv = self.login(myblog.app.config['USERNAME'],'redyello')
+        assert b'Invalid password' in rv.data
+        rv = self.login('redyello',myblog.app.config['PASSWORD'])
+        assert b'Invalid username' in rv.data
+
 
 if __name__ == '__main__':
     unittest.main()

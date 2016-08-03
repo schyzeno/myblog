@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
+    <div class=metanav>
+      {% if session.logged_in %}
+        <a href="{{ url_for('logout') }}">log out</a>
+      {% endif %}
+    </div>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
     {% block content %}
     {% endblock %}
 </html>
