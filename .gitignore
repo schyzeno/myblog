@@ -1,11 +1,12 @@
 venv/
 fs
 fls
-florm.db
+*.db
 florm/__pycache__/
 __pycache__/
 *.swp
 .swp
 config/
 myconfig.py
+init_db.py
 
