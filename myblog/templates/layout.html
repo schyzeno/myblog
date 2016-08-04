@@ -11,6 +11,8 @@
         <a href="{{ url_for('add_post') }}">Add Post</a>
         <a href="{{ url_for('logout') }}">Logout</a>
       {% endif %}
+      <a href="{{ url_for('list_posts') }}">Search</a>
+
     </div>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>

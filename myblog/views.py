@@ -51,3 +51,9 @@ def add_post():
 def view_post(postid):
     post = db_session.query(Post).filter_by(id=postid).first()
     return render_template('view_post.html',post=post)
+
+@app.route('/post/list', defaults={'searchTarget':''})
+@app.route('/post/list/<searchTarget>')
+def list_posts(searchTarget):
+    posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
+    return render_template('list_posts.html',posts=posts)
