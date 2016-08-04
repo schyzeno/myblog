@@ -7,11 +7,11 @@
     <p>
       {% for tag in post.categories %}
         {{tag.name+' '}}
-      {% else %}
-        <p>No Results Found</p>
       {% endfor %}
     </p>
   </div>
+{% else %}
+<p>No Results Found.</p>
 {% endfor %}
 <!-- Add some paginations later -->
 {% endblock %}
