@@ -64,3 +64,7 @@ def list_posts_by_category(category):
     posts = db_session.query(Post).join(Post.categories).filter(Category.name.ilike('%'+category+'%')).all()
     return render_template('list_posts.html',posts=posts)
 
+@app.route('/post/list/year/<year>/month/<month>')
+def list_posts_by_month(year,month):
+    posts = db_session.query(Post).filter(func.strftime('%Y-%m',Post.timestamp)==year+'-'+month).all()
+    return render_template('list_posts.html',posts=posts)

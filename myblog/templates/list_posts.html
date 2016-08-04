@@ -7,6 +7,8 @@
     <p>
       {% for tag in post.categories %}
         {{tag.name+' '}}
+      {% else %}
+        <p>No Results Found</p>
       {% endfor %}
     </p>
   </div>
