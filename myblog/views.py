@@ -1,5 +1,6 @@
 from myblog import app
 from flask import render_template, g, request, url_for, redirect, flash, session
+from sqlalchemy import func
 from myblog.database import db_session, init_db
 from myblog.models import Post, Category
 
@@ -57,3 +58,9 @@ def view_post(postid):
 def list_posts(searchTarget):
     posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
     return render_template('list_posts.html',posts=posts)
+
+@app.route('/post/list/categories/<category>')
+def list_posts_by_category(category):
+    posts = db_session.query(Post).join(Post.categories).filter(Category.name.ilike('%'+category+'%')).all()
+    return render_template('list_posts.html',posts=posts)
+
