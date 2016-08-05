@@ -31,7 +31,7 @@ def login():
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
-    return redirect(url_for('index',links=get_shortcuts()))
+    return redirect(url_for('index'))
 
 @app.route('/add_post', methods=['GET','POST'])
 def add_post():
