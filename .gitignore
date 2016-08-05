@@ -2,6 +2,7 @@ venv/
 fs
 fls
 *.db
+*.bkup
 florm/__pycache__/
 __pycache__/
 *.swp
