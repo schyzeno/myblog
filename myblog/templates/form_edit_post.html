@@ -9,7 +9,7 @@
         <dt>Categories:
         <dd><input type="text" size="30" name="categories" value="{% for cat in post.categories %}{{cat.name}} {% endfor %}">
         <dt>Body:
-        <dd><textarea name="body" rows="5" cols="40" value="{{post.body}}"></textarea>
+        <dd><textarea name="body" rows="5" cols="40" value="{{post.body|safe}}"></textarea>
         <dd><input type="submit" value="Save">
       </dl>
     </form>

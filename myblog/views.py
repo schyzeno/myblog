@@ -86,7 +86,7 @@ def edit_post(postid):
             tags = [] 
             for tag in request.form['categories'].split():
                 tags.append(Category(name=tag))
-            post.title = title=request.form['title']
+            post.title =request.form['title']
             post.categories = tags            
             post.body = request.form['body']
             db_session.commit()
@@ -94,21 +94,3 @@ def edit_post(postid):
         return render_template('form_edit_post.html',links=get_shortcuts(), post=post)
     return redirect(url_for('index'))
 
-#@app.route('/edit_post/<postid>', methods=['GET','POST'])
-#def edit_post():
-#    if sessiong.get('logged_in'):
-#        if session['logged_in']==True:
-#            if request.method=='POST':
-#                print(request.form['categories'].split())
-#                tags = [] 
-#                for tag in request.form['categories'].split():
-#                    tags.append(Category(name=tag))
-#                post = Post(title=request.form['title'],
-#                            categories=tags,
-#                            body=request.form['body'])
-#                db_session.add(post)
-#                db_session.commit()
-#                return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
-#            return render_template('form_post.html',links=get_shortcuts(), post=post)
-#        return redirect(url_for('index',links=get_shortcuts()))
-#    return redirect(url_for('index',links=get_shortcuts()))
