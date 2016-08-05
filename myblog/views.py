@@ -6,7 +6,7 @@ from myblog.models import Post, Category
 
 @app.route('/')
 def index():
-    return render_template('home.html',title='Home')
+    return render_template('home.html',title='Home',links=get_shortcuts())
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -25,13 +25,13 @@ def login():
             session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('index'))
-    return render_template('login.html', error=error)
+    return render_template('login.html',links=get_shortcuts(), error=error)
 
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
-    return redirect(url_for('index'))
+    return redirect(url_for('index',links=get_shortcuts()))
 
 @app.route('/add_post', methods=['GET','POST'])
 def add_post():
@@ -45,26 +45,32 @@ def add_post():
                     body=request.form['body'])
         db_session.add(post)
         db_session.commit()
-        return redirect(url_for('view_post',postid=post.id))
-    return render_template('form_post.html')
+        return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
+    return render_template('form_post.html',links=get_shortcuts())
 
 @app.route('/post/<postid>')
 def view_post(postid):
     post = db_session.query(Post).filter_by(id=postid).first()
-    return render_template('view_post.html',post=post)
+    return render_template('view_post.html',post=post,links=get_shortcuts())
 
 @app.route('/post/list', defaults={'searchTarget':''})
 @app.route('/post/list/<searchTarget>')
 def list_posts(searchTarget):
     posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
-    return render_template('list_posts.html',posts=posts)
+    return render_template('list_posts.html',posts=posts,links=get_shortcuts())
 
 @app.route('/post/list/categories/<category>')
 def list_posts_by_category(category):
     posts = db_session.query(Post).join(Post.categories).filter(Category.name.ilike('%'+category+'%')).all()
-    return render_template('list_posts.html',posts=posts)
+    return render_template('list_posts.html',posts=posts,links=get_shortcuts())
 
 @app.route('/post/list/year/<year>/month/<month>')
 def list_posts_by_month(year,month):
     posts = db_session.query(Post).filter(func.strftime('%Y-%m',Post.timestamp)==year+'-'+month).all()
-    return render_template('list_posts.html',posts=posts)
+    return render_template('list_posts.html',posts=posts,links=get_shortcuts())
+
+def get_shortcuts():
+    categories = [c._asdict() for c in db_session.query(Category.name, func.count(Category.name).label('count')).group_by(Category.name).all()]
+    months = [month._asdict() for month in db_session.query(func.strftime('%Y',Post.timestamp).label('year'),func.strftime('%m',Post.timestamp).label('month'),func.count(func.strftime('%Y-%m',Post.timestamp)).label('count')).group_by(func.strftime('%Y-%m',Post.timestamp)).all()]
+    links = {'categories':categories,'months':months}
+    return links
