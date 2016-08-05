@@ -35,18 +35,20 @@ def logout():
 
 @app.route('/add_post', methods=['GET','POST'])
 def add_post():
-    if request.method=='POST':
-        print(request.form['categories'].split())
-        tags = [] 
-        for tag in request.form['categories'].split():
-            tags.append(Category(name=tag))
-        post = Post(title=request.form['title'],
-                    categories=tags,
-                    body=request.form['body'])
-        db_session.add(post)
-        db_session.commit()
-        return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
-    return render_template('form_post.html',links=get_shortcuts())
+    if session.get('logged_in')== True:
+        if request.method=='POST':
+            print(request.form['categories'].split())
+            tags = [] 
+            for tag in request.form['categories'].split():
+                tags.append(Category(name=tag))
+            post = Post(title=request.form['title'],
+                        categories=tags,
+                        body=request.form['body'])
+            db_session.add(post)
+            db_session.commit()
+            return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
+        return render_template('form_add_post.html',links=get_shortcuts())
+    return redirect(url_for('index'))
 
 @app.route('/post/<postid>')
 def view_post(postid):
@@ -74,3 +76,39 @@ def get_shortcuts():
     months = [month._asdict() for month in db_session.query(func.strftime('%Y',Post.timestamp).label('year'),func.strftime('%m',Post.timestamp).label('month'),func.count(func.strftime('%Y-%m',Post.timestamp)).label('count')).group_by(func.strftime('%Y-%m',Post.timestamp)).all()]
     links = {'categories':categories,'months':months}
     return links
+
+@app.route('/edit_post/<postid>', methods=['GET','POST'])
+def edit_post(postid):
+    if session.get('logged_in')== True:
+        post = db_session.query(Post).filter_by(id=postid).first()
+        print(post)
+        if request.method=='POST':
+            tags = [] 
+            for tag in request.form['categories'].split():
+                tags.append(Category(name=tag))
+            post.title = title=request.form['title']
+            post.categories = tags            
+            post.body = request.form['body']
+            db_session.commit()
+            return redirect(url_for('view_post',postid=post.id))
+        return render_template('form_edit_post.html',links=get_shortcuts(), post=post)
+    return redirect(url_for('index'))
+
+#@app.route('/edit_post/<postid>', methods=['GET','POST'])
+#def edit_post():
+#    if sessiong.get('logged_in'):
+#        if session['logged_in']==True:
+#            if request.method=='POST':
+#                print(request.form['categories'].split())
+#                tags = [] 
+#                for tag in request.form['categories'].split():
+#                    tags.append(Category(name=tag))
+#                post = Post(title=request.form['title'],
+#                            categories=tags,
+#                            body=request.form['body'])
+#                db_session.add(post)
+#                db_session.commit()
+#                return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
+#            return render_template('form_post.html',links=get_shortcuts(), post=post)
+#        return redirect(url_for('index',links=get_shortcuts()))
+#    return redirect(url_for('index',links=get_shortcuts()))
