@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% for post in posts %}
+  <div>
+    <a href="{{url_for('view_post',postid=post.id)}}">{{post.title}}</a>
+    <p>{{post.timestamp}}</p>
+    <p>
+      {% for tag in post.categories %}
+        {{tag.name+' '}}
+      {% endfor %}
+    </p>
+  </div>
+{% else %}
+<p>No Results Found.</p>
+{% endfor %}
+<!-- Add some paginations later -->
+{% endblock %}
