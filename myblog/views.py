@@ -46,7 +46,7 @@ def add_post():
                         body=request.form['body'])
             db_session.add(post)
             db_session.commit()
-            return redirect(url_for('view_post',postid=post.id,links=get_shortcuts()))
+            return redirect(url_for('view_post',postid=post.id,))
         return render_template('form_add_post.html',links=get_shortcuts())
     return redirect(url_for('index'))
 
@@ -81,7 +81,6 @@ def get_shortcuts():
 def edit_post(postid):
     if session.get('logged_in')== True:
         post = db_session.query(Post).filter_by(id=postid).first()
-        print(post)
         if request.method=='POST':
             tags = [] 
             for tag in request.form['categories'].split():
