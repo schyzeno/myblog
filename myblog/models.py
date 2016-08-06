@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from myblog.database import Base
 import datetime
 
@@ -28,7 +28,7 @@ class Category(Base):
     name = Column(String(50),nullable=False)
     post_id = Column(Integer, ForeignKey('post.id'))
 
-    post = relationship("Post", backref="categories")
+    post = relationship("Post", backref=backref("categories", cascade="all, delete-orphan"))
 
     def __init__(self, name=None, post_id=None):
         self.name = name
