@@ -1,15 +1,18 @@
 {% extends 'layout.html' %}
+{% block title %}Edit Post{% endblock %}
 {% block content %}
 {% if session.logged_in %}
-<h2>Edit Post</h2>
+<h1>Edit Post</h1>
     <form action="{{ url_for('edit_post',postid=post.id) }}" method="post" class="edit_post">
       <dl>
         <dt>Title:
         <dd><input type="text" size="30" name="title" value="{{post.title}}">
+        <dd><label><input type="checkbox" name="hidden" value="hidden" {% if post.hidden %}checked="checked"{% endif %}>Hide</label>
+        <dd><input type="hidden" name="hidden" value="shown">
         <dt>Categories:
         <dd><input type="text" size="30" name="categories" value="{% for cat in post.categories %}{{cat.name}} {% endfor %}">
         <dt>Body:
-        <dd><textarea name="body" rows="5" cols="40">{{post.body}}</textarea>
+        <dd><textarea name="body" rows="20" cols="100">{{post.body}}</textarea>
         <dd><input type="submit" value="Save">
       </dl>
     </form>

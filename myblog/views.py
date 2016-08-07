@@ -6,7 +6,7 @@ from myblog.models import Post, Category
 
 @app.route('/')
 def index():
-    return render_template('home.html',title='Home',links=get_shortcuts())
+    return render_template('home.html',links=get_shortcuts())
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -55,25 +55,30 @@ def view_post(postid):
     post = db_session.query(Post).filter_by(id=postid).first()
     return render_template('view_post.html',post=post,links=get_shortcuts())
 
-@app.route('/post/list', defaults={'searchTarget':''})
-@app.route('/post/list/<searchTarget>')
+@app.route('/post/list', methods=['GET','POST'], defaults={'searchTarget':''})
+@app.route('/post/list/<searchTarget>', methods=['GET','POST'])
 def list_posts(searchTarget):
-    posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
+    if request.method == 'POST':
+        searchTarget=request.form['searchTarget']
+    if session.get('logged_in')== True:
+        posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
+    else:
+        posts = db_session.query(Post).filter(Post.hidden==False).filter(Post.title.contains(searchTarget)).all()
     return render_template('list_posts.html',posts=posts,links=get_shortcuts())
 
 @app.route('/post/list/categories/<category>')
 def list_posts_by_category(category):
-    posts = db_session.query(Post).join(Post.categories).filter(Category.name.ilike('%'+category+'%')).all()
+    posts = db_session.query(Post).join(Post.categories).filter(Post.hidden==False).filter(Category.name.ilike('%'+category+'%')).all()
     return render_template('list_posts.html',posts=posts,links=get_shortcuts())
 
 @app.route('/post/list/year/<year>/month/<month>')
 def list_posts_by_month(year,month):
-    posts = db_session.query(Post).filter(func.strftime('%Y-%m',Post.timestamp)==year+'-'+month).all()
+    posts = db_session.query(Post).filter(Post.hidden==False).filter(func.strftime('%Y-%m',Post.timestamp)==year+'-'+month).all()
     return render_template('list_posts.html',posts=posts,links=get_shortcuts())
 
 def get_shortcuts():
-    categories = [c._asdict() for c in db_session.query(Category.name, func.count(Category.name).label('count')).group_by(Category.name).all()]
-    months = [month._asdict() for month in db_session.query(func.strftime('%Y',Post.timestamp).label('year'),func.strftime('%m',Post.timestamp).label('month'),func.count(func.strftime('%Y-%m',Post.timestamp)).label('count')).group_by(func.strftime('%Y-%m',Post.timestamp)).all()]
+    categories = [c._asdict() for c in db_session.query(Category.name, func.count(Category.name).label('count')).join(Post).filter(Post.hidden==False).group_by(Category.name).all()]
+    months = [month._asdict() for month in db_session.query(func.strftime('%Y',Post.timestamp).label('year'),func.strftime('%m',Post.timestamp).label('month'),func.count(func.strftime('%Y-%m',Post.timestamp)).label('count')).filter(Post.hidden==False).group_by(func.strftime('%Y-%m',Post.timestamp)).all()]
     links = {'categories':categories,'months':months}
     return links
 
@@ -88,6 +93,7 @@ def edit_post(postid):
             post.title =request.form['title']
             post.categories = tags            
             post.body = request.form['body']
+            post.hidden =  request.form['hidden']=='hidden'
             db_session.commit()
             return redirect(url_for('view_post',postid=post.id))
         return render_template('form_edit_post.html',links=get_shortcuts(), post=post)
