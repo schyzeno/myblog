@@ -2,7 +2,7 @@ import os
 import sys
 
 ##Virtualenv Settings
-activate_this = '/usr/share/venv/bin/activate_this.py'
+activate_this = '/usr/share/myblog/venv/bin/activate_this.py'
 execfile(activate_this, dict(__file__=activate_this))
 
 ##Replace the standard out
@@ -15,4 +15,4 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)),'../
 sys.path.append('/usr/share/myblog/')
 
 ##Create appilcation for our app
-from myblog.run import app as application
+from runserver import app as application
