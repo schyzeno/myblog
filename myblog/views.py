@@ -55,9 +55,11 @@ def view_post(postid):
     post = db_session.query(Post).filter_by(id=postid).first()
     return render_template('view_post.html',post=post,links=get_shortcuts())
 
-@app.route('/post/list', defaults={'searchTarget':''})
-@app.route('/post/list/<searchTarget>')
+@app.route('/post/list', methods=['GET','POST'], defaults={'searchTarget':''})
+@app.route('/post/list/<searchTarget>', methods=['GET','POST'])
 def list_posts(searchTarget):
+    if request.method == 'POST':
+        searchTarget=request.form['searchTarget']
     if session.get('logged_in')== True:
         posts = db_session.query(Post).filter(Post.title.contains(searchTarget)).all()
     else:
