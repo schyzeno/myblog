@@ -6,7 +6,7 @@ from myblog.models import Post, Category
 
 @app.route('/')
 def index():
-    return render_template('home.html',title='Home',links=get_shortcuts())
+    return render_template('home.html',links=get_shortcuts())
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
