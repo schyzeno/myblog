@@ -7,34 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <div class=metanav>
-      <a href="{{ url_for('index') }}">Home</a>
-      {% if session.logged_in %}
-        <a href="{{ url_for('add_post') }}">Add Post</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-      {% endif %}
-      <form action="{{ url_for('list_posts') }}" method="post" class="search">
-          <input type="text" size="15" name="searchTarget" placeholder="Search">
-          <input type="submit" value="Submit">
-      </form>
-
-    </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-    {% block content %}
-    {% endblock %}
-    <div>
-      <h3>Months</h3>
-      <ul>
-      {% for month in links['months'] %}
-        <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}({{month['count']}})</a></li>
+    <div id="container">
+      <div class=metanav>
+        <a href="{{ url_for('index') }}">Home</a>
+        {% if session.logged_in %}
+          <a href="{{ url_for('add_post') }}">Add Post</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
+        <form action="{{ url_for('list_posts') }}" method="post" class="search">
+            <input type="text" size="15" name="searchTarget" placeholder="Search">
+            <input type="submit" value="Submit">
+        </form>
+  
+      </div>
+      {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
       {% endfor %}
-      </ul>
-      <h3>Categories</h3>
-      {% for cat in links['categories'] %}
-        <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}} ({{cat['count']}})</a></li>
-      {% endfor %}
+      <div id="content" class="clearfix">
+        <div id="main">
+        {% block content %}
+        {% endblock %}
+        </div>
+        <div id="layout-links">
+          <h3>Months</h3>
+          <ul>
+          {% for month in links['months'] %}
+            <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}({{month['count']}})</a></li>
+          {% endfor %}
+          </ul>
+          <h3>Categories</h3>
+          {% for cat in links['categories'] %}
+            <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}} ({{cat['count']}})</a></li>
+          {% endfor %}
+        </div>
+      </div>
     </div>
+  </body>
 </html>
 
