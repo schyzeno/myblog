@@ -4,37 +4,93 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel=stylesheet type=text/css href="{{ url_for('static',filename='style.css')}}">
     <link rel="icon"  type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
   </head>
   <body>
-    <div class=metanav>
-      <a href="{{ url_for('index') }}">Home</a>
-      {% if session.logged_in %}
-        <a href="{{ url_for('add_post') }}">Add Post</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-      {% endif %}
-      <form action="{{ url_for('list_posts') }}" method="post" class="search">
-          <input type="text" size="15" name="searchTarget" placeholder="Search">
-          <input type="submit" value="Submit">
-      </form>
+    <div id="container">
+      <div class="navbar navbar-inverse">
+     	<div class="container-fluid">
+	  <div class="navbar-header">
+ 	    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-links" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+	    </button>
+	    <a class="navbar-brand" href="#">Nam Phan's Blog</a>
+	  </div> 
+          <div class="collapse navbar-collapse" id="nav-links">
+            <ul class="nav navbar-nav">
+              <li><a href="{{ url_for('index') }}">Home<span class="sr-only">(current)</span></a></li>
+             {% if session.logged_in %}
+              <li><a href="{{ url_for('add_post') }}">Add Post</a></li>
+              <li><a href="{{ url_for('logout') }}">Logout</a></li>
+             {% endif %}
+            </ul>
+            <form action="{{ url_for('list_posts') }}" method="post" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" size="15" name="searchTarget" placeholder="Search" class="form-control">
+              </div>
+              <input type="submit" value="Submit" class="btn btn-default">
+            </form>
 
-    </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-    {% block content %}
-    {% endblock %}
-    <div>
-      <h3>Months</h3>
-      <ul>
-      {% for month in links['months'] %}
-        <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}({{month['count']}})</a></li>
+          </div>
+	</div>
+
+  
+      </div>
+      {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
       {% endfor %}
-      </ul>
-      <h3>Categories</h3>
-      {% for cat in links['categories'] %}
-        <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}} ({{cat['count']}})</a></li>
-      {% endfor %}
+
+      <div class="container">
+        <div class="row">
+
+          <div class="col-md-9">
+          {% block content %}
+          {% endblock %}
+          </div>
+
+          <div  class="col-md-3">
+            <div class="box shadow-effect">
+            <h3>Archive</h3>
+            <ul class="nav nav-pills nav-stacked list-unstyled">
+            {% for month in links['months'] %}
+            <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}<span class="badge">{{month['count']}}</span></a></li>
+            {% endfor %}
+            </ul>
+            <hr>
+            <h3>Categories</h3>
+            <ul class="nav nav-pills nav-stacked list-unstyled">
+            {% for cat in links['categories'] %}
+            <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}}<span class="badge">{{cat['count']}}</span></a></li>
+            {% endfor %}
+          </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
+
+  <!-- JavaScript: placed at the end of the document so the pages load faster -->
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
+
+  <!-- Tether -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+  </body>
 </html>
 
