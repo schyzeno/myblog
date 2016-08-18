@@ -47,24 +47,33 @@
       {% for message in get_flashed_messages() %}
       <div class=flash>{{ message }}</div>
       {% endfor %}
+
       <div class="container">
         <div class="row">
-          <div class="col-md-10">
+
+          <div class="col-md-9">
           {% block content %}
           {% endblock %}
           </div>
-          <div  class="col-md-2">
+
+          <div  class="col-md-3">
+            <div class="box shadow-effect">
             <h3>Archive</h3>
-            <ul>
+            <ul class="nav nav-pills nav-stacked list-unstyled">
             {% for month in links['months'] %}
-              <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}({{month['count']}})</a></li>
+            <li><a href="{{url_for('list_posts_by_month',year=month['year'],month=month['month'])}}">{{month['month']}} {{month['year']}}<span class="badge">{{month['count']}}</span></a></li>
             {% endfor %}
             </ul>
+            <hr>
             <h3>Categories</h3>
+            <ul class="nav nav-pills nav-stacked list-unstyled">
             {% for cat in links['categories'] %}
-              <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}} ({{cat['count']}})</a></li>
+            <li><a href="{{url_for('list_posts_by_category',category=cat['name'])}}">{{cat['name']}}<span class="badge">{{cat['count']}}</span></a></li>
             {% endfor %}
+          </ul>
+            </div>
           </div>
+
         </div>
       </div>
     </div>

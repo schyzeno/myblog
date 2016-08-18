@@ -2,12 +2,12 @@
 {% block title %}Search{% endblock %}
 {% block content %}
 {% for post in posts %}
-  <div>
-    <a href="{{url_for('view_post',postid=post.id)}}">{{post.title}}</a>
-    <p>{{post.timestamp}}</p>
+  <div class="box shadow-effect">
+    <a href="{{url_for('view_post',postid=post.id)}}"><h2>{{post.title}}</h2></a>
+    <p><strong>{{post.timestamp}}</strong></p>
     <p>
       {% for tag in post.categories %}
-        {{tag.name+' '}}
+      <span class="label label-primary">{{tag.name}}</span> 
       {% endfor %}
     </p>
   </div>
